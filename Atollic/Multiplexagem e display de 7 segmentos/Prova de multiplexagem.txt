@@ -1,0 +1,106 @@
+////relogio digital, testa se o botao foi pressionado no momento que é pressionado aumenta o min até 59 onde zera sem afetar a hora
+// outro botão aumenta a hora.
+//dispertador: entrara em uma sub função onde vai comparar se o botão de ajuste para horario de dispertador foi ativo com uma chave seletora
+//ou mesmo dois cliques de um botao em que decidira qual sub função entrar;
+
+#include "main.h"
+
+int display1=0, display2=0;
+int conta=0;
+int conta_display=0;
+int aux=0;
+int teste=0;
+int teste2=0;
+
+int TAB[]={0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x27, 0x7F, 0x6F, 0X77,0X7C,0X58,0X5E ,0X79,0X71};
+
+void funcao_botao(){
+	//acrescenta
+	if((GPIOB->IDR&0x01)==0x01 && teste==0){
+		teste=1;
+		display2=display2+1;
+		if(display2>15){
+			display2=0;
+			display1=display1+1;
+			if(display1>15){
+				display1=0;
+			}
+		}
+	}
+	//diminui
+	if((GPIOB->IDR&0x02)==0x02 && teste2==0){
+		teste2=1;
+		display2=display2-1;
+		if(display2<0){
+			display2=15;
+			display1=display1-1;
+			if(display1<0){
+				display1=15;
+			}
+		}
+	}
+
+
+
+	 if((GPIOB->IDR&0x01)==0x0 && teste==1){
+	    		teste=0;
+
+	    	}
+	   if((GPIOB->IDR&0x2)==0x0 && teste2==1){
+	    		teste2=0;
+
+	    	}
+}
+
+
+void TIM1_TRG_COM_TIM11_IRQHandler(){
+    GPIOC->ODR |=0x3FF00;    //desligando todos os displaylays
+    GPIOC->ODR &=~0xFF; //limpando os oito bits
+		 //faz a função normal do botão para ajuste de h e min
+		 funcao_botao();
+/////////////////////////////////////////////////
+
+    switch(conta_display){
+    case 0:
+    		GPIOC->ODR |= TAB[display1];
+    		GPIOC->ODR &= ~0x100;
+    		break;
+    case 1:
+            GPIOC->ODR |= TAB[display2];
+            GPIOC->ODR &= ~0x200;//pc9
+            break;
+    }
+
+    if(++conta_display>3)
+    	conta_display=0;
+
+     TIM11->SR &= ~(0x01);    //limpando flag do timer10
+}
+
+void config_int_tim11(void){
+    //configurando o timer11 para 2ms 120 hz em cada led
+        RCC->APB2ENR|=0x40000;    //habilita clock timer10
+        TIM11->CR1|=0x01;        //habilita contagem timer10
+        TIM11->PSC=16;
+        TIM11->ARR=999;
+
+        TIM11->DIER|=0x01;        //habilita interrupção timer10
+        // Habilita interrupção no controlador
+        NVIC_SetPriority(TIM1_TRG_COM_TIM11_IRQn, 3);//Priority 3
+        NVIC_EnableIRQ(TIM1_TRG_COM_TIM11_IRQn);//
+}
+int main(void)
+{
+
+
+ 	RCC->AHB1ENR=0x87;
+    GPIOC->MODER|=0x5555555;
+    GPIOA->MODER|=0x28555501;    //pa5 como saída
+    GPIOB->MODER|=0X50000;
+    //configurando o timer10 para gerar 5segundos
+
+    config_int_tim11();
+     while (1) {
+
+}
+}

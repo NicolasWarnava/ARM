@@ -1,0 +1,130 @@
+//ALFABETO- nome
+//G-F-E-D-C-B-A
+//6-5-4-3-2-1-0 //PINO
+//0-0-0-0-0-0-0 //DESLIGADO
+//1-0-1-0-1-0-0//->n // 0X54
+//0-0-0-0-1-0-0//->i // 0X04
+//1-0-1-1-0-0-0//->c // 0X58
+//1-0-1-1-1-0-0//->o//  0X5C
+//0-1-1-1-0-0-0//->l // 0X38
+//1-1-1-0-1-1-1//->a // 0X77
+//1-1-0-1-1-0-1//->s // 0X6D
+////////////////////////////
+//LED-SETE-SEGMENTOS
+/////////////////////////
+// ___________________ //
+//|  _______A_______  |//
+//| |               | |//
+//| |F             B| |//
+//| |               | |//
+//|  _______G_______  |//
+//| |               | |//
+//| |E             C| |//
+//| |               | |//
+//| |________D______| |//
+//|___________________|//
+/////////////////////////
+
+
+
+#include "main.h"
+
+int display1=0, display2=0, display3=0, display4=0;
+int conta_display=0;
+
+int nome[]={0X54,0X04,0X58,0X5C,0X38,0X77,0X6D};
+
+void TIM1_UP_TIM10_IRQHandler(){
+ int tam=0;
+ tam= tam + 7;
+	for(int i=0;i<tam;i++){
+		if(--display1<0)
+		display1=tam;
+		if(--display2<0)
+		display2=tam;
+		if(--display3<0)
+		display3=tam;
+		if(--display4<0)
+		display4=tam;
+	}
+
+
+     TIM10->SR &= ~(0x01);    //limpando flag do timer10
+}
+
+
+void TIM1_TRG_COM_TIM11_IRQHandler(){
+    GPIOC->ODR |=0xF00;    //desligando todos os displaylays
+    GPIOC->ODR &=~0xFF; //limpando os oito bits
+
+    switch(conta_display){
+    case 0:
+        GPIOC->ODR |= nome[display1];
+        GPIOC->ODR &= ~0x100;
+
+        break;
+    case 1:
+            GPIOC->ODR |= nome[display2+1];
+            GPIOC->ODR &= ~0x200;
+
+            break;
+    case 2:
+            GPIOC->ODR |= nome[display3+2];
+            GPIOA->ODR &= ~0x400;
+
+            break;
+    case 3:
+            GPIOC->ODR |= nome[display4+3];
+            GPIOC->ODR &= ~0x800;
+
+            break;
+
+
+
+
+    }
+    if(++conta_display>6)conta_display=0;
+
+
+     TIM11->SR &= ~(0x01);    //limpando flag do timer10
+}
+void config_int_tim11(void){
+    //configurando o timer11 para 2ms 120 hz em cada led
+        RCC->APB2ENR|=0x40000;    //habilita clock timer10
+        TIM11->CR1|=0x01;        //habilita contagem timer10
+        TIM11->PSC=32;
+        TIM11->ARR=999;
+
+        TIM11->DIER|=0x01;        //habilita interrupção timer10
+        // Habilita interrupção no controlador
+        NVIC_SetPriority(TIM1_TRG_COM_TIM11_IRQn, 3);//Priority 3
+        NVIC_EnableIRQ(TIM1_TRG_COM_TIM11_IRQn);//
+}
+void config_int_tim10(void){
+    //configurando o timer10 para 1s
+        RCC->APB2ENR|=0x20000;    //habilita clock timer10
+        TIM10->CR1|=0x01;        //habilita contagem timer10
+        TIM10->PSC=15999;
+        TIM10->ARR=999;
+
+        TIM10->DIER|=0x01;        //habilita interrupção timer10
+        // Habilita interrupção no controlador
+        NVIC_SetPriority(TIM1_UP_TIM10_IRQn, 3);//Priority 3
+        NVIC_EnableIRQ(TIM1_UP_TIM10_IRQn);//
+}
+
+int main(void)
+{
+    RCC->AHB1ENR=0x87;
+    GPIOC->MODER|=0x00555555;
+    GPIOA->MODER|=0x28555500;    //pa5 como saída
+    //configurando o timer10 para gerar 5segundos
+    config_int_tim10();
+    config_int_tim11();
+     while (1) {
+
+     }
+}
+
+
+
