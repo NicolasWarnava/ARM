@@ -1,0 +1,90 @@
+/*Exercício 9: Elabore um programa que gere os sons de, ao menos, os 7 tons
+maiores. As notas são acionadas através de botões e reproduzidas em um
+alto-falante.
+Nota Freq(Hz)  Periodo(t)  	ARR  	PSC		PINO
+________________________________________________
+Dó 	 261,63     3,82ms		999		60		A0
+Re   293,66		3,4ms		999		53		A1
+Mi   329,63		3,03ms		999		47		A2
+Fá   349,23 	2,86ms		999		45		A3
+Sol  392		2,55ms		999		40		A4
+La   440		2,27ms		999		35		A5
+Si   493,88		2,024ms		999		31		A6
+*/
+#include "main.h"
+//funcao para trocar frequencia da nota
+void nota(void){
+		while((TIM11->SR & 0x1) == 0x0) {}
+			TIM11->SR&=~(0x1);
+}
+
+
+int main(void)
+{
+
+
+
+	RCC->AHB1ENR=0X00000087;  //liga o clock
+		GPIOC->MODER|=0X00001; // pc0
+		GPIOB->MODER|=0X00000000; //PA 0-6 COMO CHAVES
+
+		RCC->APB2ENR|=0X40000; //HABILITA O CLOCK DO TIMER 11
+		TIM11->CR1|=0X05;
+
+		TIM11->ARR=999;
+
+
+  while (1)
+  {
+	 //checa se nao tem nenhuma chave pressionada
+		int alfa;
+		  alfa=GPIOB->IDR&0x7F; //pinos B0 -> B6
+		  if(alfa==0){
+			  GPIOC->ODR=~(0X01);//PC0
+		 		  }
+		  //DÓ
+		  if(alfa==1){
+				TIM11->PSC=60;
+				GPIOC->ODR^=0X01;//PC0
+				nota();
+		  }
+		  //RE
+		  if(alfa==2){
+				TIM11->PSC=53;
+				GPIOC->ODR^=0X01;//PC0
+				nota();
+		  }
+		  //MI
+		  if(alfa==4){
+				TIM11->PSC=47;
+				GPIOC->ODR^=0X01;//PC0
+				nota();
+		  }
+		  //FA
+		  if(alfa==8){
+			  	TIM11->PSC=45;
+				GPIOC->ODR^=0X01;//PC0
+				nota();
+		  }
+		  //SOL
+		  if(alfa==16){
+				TIM11->PSC=40;
+				GPIOC->ODR^=0X01;//PC0
+				nota();
+		  }
+		  //LA
+		  if(alfa==32){
+				TIM11->PSC=35;
+				GPIOC->ODR^=0X01;//PC0
+				nota();
+		  }
+		  //SI
+		  if(alfa==64){
+				TIM11->PSC=31;
+				GPIOC->ODR^=0X01;//PC0
+				nota();
+		  }
+
+	  }
+
+}
