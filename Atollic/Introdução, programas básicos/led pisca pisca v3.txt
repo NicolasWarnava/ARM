@@ -1,0 +1,171 @@
+/**
+  ******************************************************************************
+  * @file    GPIO/GPIO_IOToggle/Src/main.c 
+  * @author  MCD Application Team
+  * @version V1.1.3
+  * @date    13-November-2015
+  * @brief   This example describes how to configure and use GPIOs through 
+  *          the STM32F4xx HAL API.
+  ******************************************************************************
+  * @attention
+  *
+  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
+  *
+  * Redistribution and use in source and binary forms, with or without modification,
+  * are permitted provided that the following conditions are met:
+  *   1. Redistributions of source code must retain the above copyright notice,
+  *      this list of conditions and the following disclaimer.
+  *   2. Redistributions in binary form must reproduce the above copyright notice,
+  *      this list of conditions and the following disclaimer in the documentation
+  *      and/or other materials provided with the distribution.
+  *   3. Neither the name of STMicroelectronics nor the names of its contributors
+  *      may be used to endorse or promote products derived from this software
+  *      without specific prior written permission.
+  *
+  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  *
+  ******************************************************************************
+  */
+
+/* Includes ------------------------------------------------------------------*/
+
+
+#include "main.h"
+
+
+//função tempo
+int tempo(void)
+{
+    for(int i=0 ;i<50000;i++);
+}
+
+int main()
+{
+    RCC->AHB1ENR=0X87;
+    GPIOC->MODER|=0X555555;
+
+    GPIOA->MODER|=0X28000400;
+
+while(1){
+	if((GPIOC->IDR&0X2000)==0X2000){
+	seq_1 ();
+	}
+	else{
+	seq_2 ();
+	}
+
+}
+}
+int seq_1 (){
+
+    GPIOC->ODR|=0X1; //liga p0
+         tempo();
+    GPIOC->ODR|=0X2;  // liga p1
+        tempo();
+    GPIOC->ODR&=~(0X1); //desliga p0
+        tempo();
+    GPIOC->ODR|=0X4;  // liga p2
+        tempo();
+    GPIOC->ODR&=~(0X2); //desliga p1
+        tempo();
+    GPIOC->ODR|=0X8;  // liga p3
+        tempo();
+    GPIOC->ODR&=~(0X4); //desliga p2
+        tempo();
+    GPIOC->ODR|=0X10;  // liga  p4
+        tempo();
+    GPIOC->ODR&=~(0X8); //desliga p3
+        tempo();
+    GPIOC->ODR|=0X20;  // liga p5
+        tempo();
+    GPIOC->ODR&=~(0X10); //desliga p4
+        tempo();
+    GPIOC->ODR|=0X40;  // liga p6
+        tempo();
+    GPIOC->ODR&=~(0X20); //desliga p5
+        tempo();
+    GPIOC->ODR|=0X80;  // liga p7
+        tempo();
+    GPIOC->ODR&=~(0X40); //desliga p6
+        tempo();
+    GPIOC->ODR|=0X100;  // liga p8
+        tempo();
+    GPIOC->ODR&=~(0X80); //desliga p7
+        tempo();
+    GPIOC->ODR|=0X200;  // liga p9
+        tempo();
+    GPIOC->ODR&=~(0X100); //desliga p8
+        tempo();
+    GPIOC->ODR|=0X400;  // liga p10
+        tempo();
+    GPIOC->ODR&=~(0X200); //desliga p9
+        tempo();
+    GPIOC->ODR|=0X800;  // liga p11
+        tempo();
+    GPIOC->ODR&=~(0X400); //desliga p10
+        tempo();
+    GPIOC->ODR&=~(0X800); //desliga p11
+        tempo();
+
+}
+int seq_2 (){
+
+
+    GPIOC->ODR|=0X800; //liga p11
+         tempo();
+    GPIOC->ODR|=0X400;  // liga p10
+        tempo();
+    GPIOC->ODR&=~(0X800); //desliga p11
+        tempo();
+    GPIOC->ODR|=0X200;  // liga p9
+        tempo();
+    GPIOC->ODR&=~(0X400); //desliga p10
+        tempo();
+    GPIOC->ODR|=0X100;  // liga p8
+        tempo();
+    GPIOC->ODR&=~(0X200); //desliga p9
+        tempo();
+    GPIOC->ODR|=0X80;  // liga  p7
+        tempo();
+    GPIOC->ODR&=~(0X100); //desliga p8
+        tempo();
+    GPIOC->ODR|=0X40;  // liga p6
+        tempo();
+    GPIOC->ODR&=~(0X80); //desliga p7
+        tempo();
+    GPIOC->ODR|=0X20;  // liga p5
+        tempo();
+    GPIOC->ODR&=~(0X40); //desliga p6
+        tempo();
+    GPIOC->ODR|=0X10;  // liga p4
+        tempo();
+    GPIOC->ODR&=~(0X20); //desliga p5
+        tempo();
+    GPIOC->ODR|=0X8;  // liga p3
+        tempo();
+    GPIOC->ODR&=~(0X10); //desliga p4
+        tempo();
+    GPIOC->ODR|=0X4;  // liga p2
+        tempo();
+    GPIOC->ODR&=~(0X8); //desliga p3
+        tempo();
+    GPIOC->ODR|=0X2;  // liga p1
+        tempo();
+    GPIOC->ODR&=~(0X4); //desliga p2
+        tempo();
+    GPIOC->ODR|=0X1;  // liga p0
+        tempo();
+    GPIOC->ODR&=~(0X2); //desliga p1
+        tempo();
+    GPIOC->ODR&=~(0X1); //desliga p0
+        tempo();
+}

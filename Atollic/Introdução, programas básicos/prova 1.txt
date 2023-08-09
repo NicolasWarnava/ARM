@@ -1,0 +1,217 @@
+#include "main.h"
+//variaveis globais
+int trava=0;
+int c=0;
+int piscar=0;
+//funções de tempo
+void tps(){
+	for(int i=0;i<500000;i++);
+}
+void tpisca(){
+	for(int x=0;x<500000;x++);
+}
+//funões de pisca pisca
+void ps1(){
+	GPIOC->ODR=0X1; // 1000000
+	tpisca();
+	GPIOC->ODR&=~0X1; // 1000000
+	tpisca();
+}
+void ps2(){
+	GPIOC->ODR=0X3; // 1100000
+	tpisca();
+	GPIOC->ODR&=~0X3; // 1100000
+	tpisca();
+}
+void ps3(){
+	GPIOC->ODR=0X7; // 1110000
+	tpisca();
+	GPIOC->ODR&=~0X7; // 1110000
+	tpisca();
+}
+void ps4(){
+	GPIOC->ODR=0XF; // 1111000
+	tpisca();
+	GPIOC->ODR&=~0XF; // 1111000
+	tpisca();
+}
+void ps5(){
+	GPIOC->ODR=0X1F; // 1111100
+	tpisca();
+	GPIOC->ODR&=~0X1F;
+	tpisca();
+}
+void ps6(){
+	GPIOC->ODR=0X3F; // 1111110
+	tpisca();
+	GPIOC->ODR&=~0X3F; // 1111110
+	tpisca();
+}
+void ps7(){
+	GPIOC->ODR=0X7F; // 1111111
+	tpisca();
+	GPIOC->ODR&=~0X7F;
+	tpisca();
+}
+////funções de sequencia crescente de acordo com numero binario
+void seq1(){
+	GPIOC->ODR=0X1; // 1000000
+		tps();
+}
+void seq2(){
+	GPIOC->ODR=0X1; // 1000000
+		tps();
+	GPIOC->ODR=0X3; // 1100000
+}
+void seq3(){
+	GPIOC->ODR=0X1; // 1000000
+		tps();
+	GPIOC->ODR=0X3; // 1100000
+		tps();
+	GPIOC->ODR=0X7; // 1110000
+}
+void seq4(){
+	GPIOC->ODR=0X1; // 1000000
+		tps();
+	GPIOC->ODR=0X3; // 1100000
+		tps();
+	GPIOC->ODR=0X7; // 1110000
+		tps();
+	GPIOC->ODR=0XF; // 1111000
+
+}
+void seq5(){
+	GPIOC->ODR=0X1; // 1000000
+		tps();
+	GPIOC->ODR=0X3; // 1100000
+		tps();
+	GPIOC->ODR=0X7; // 1110000
+		tps();
+	GPIOC->ODR=0XF; // 1111000
+		tps();
+	GPIOC->ODR=0X1F; // 1111100
+}
+void seq6(){
+	GPIOC->ODR=0X1; // 1000000
+		tps();
+	GPIOC->ODR=0X3; // 1100000
+		tps();
+	GPIOC->ODR=0X7; // 1110000
+		tps();
+	GPIOC->ODR=0XF; // 1111000
+		tps();
+	GPIOC->ODR=0X1F; // 1111100
+		tps();
+	GPIOC->ODR=0X3F; // 1111110
+}
+void seq7(){
+	GPIOC->ODR=0X1; // 1000000
+		tps();
+	GPIOC->ODR=0X3; // 1100000
+		tps();
+	GPIOC->ODR=0X7; // 1110000
+		tps();
+	GPIOC->ODR=0XF; // 1111000
+		tps();
+	GPIOC->ODR=0X1F; // 1111100
+		tps();
+	GPIOC->ODR=0X3F; // 1111110
+	    tps();
+	GPIOC->ODR=0X7F; // 1111111
+}
+//////////
+
+int main(){
+
+
+	int aux;
+    RCC->AHB1ENR=0X87;
+   GPIOC->MODER|=0X5555;
+   GPIOB->MODER|=0X0;
+   GPIOA->MODER|=0X28000400;
+
+
+  while(1){
+
+	  aux=GPIOB->IDR&0x700; //pinos b8;b9;b10
+	  aux=aux>>8;
+
+	  if((GPIOB->IDR&0X1)==0X1){//pino B1
+			  if(trava==0){
+				  c=aux;
+				trava=1;
+			  }
+	  }
+      if((GPIOB->IDR&=0x1) == 0x0){
+	  		  if(trava == 1){
+	  			  trava=0;
+	  		  }
+	  }
+
+ 	     if(c==1 && piscar==0){
+ 			seq1();
+ 			piscar=1;
+ 		  }
+ 		 if(c==1 && piscar==1){
+ 			tps();
+ 			ps1();
+ 		  }
+ 		 ////////
+		 if(c==2 && piscar==0){
+				seq2();
+				piscar=1;
+			  }
+		 if(c==2 && piscar==1){
+			tps();
+			ps2();
+		 }
+		 ////////
+		 if(c==3 && piscar==0){
+			seq3();
+			piscar=1;
+			  }
+		 if(c==3 && piscar==1){
+			tps();
+			ps3();
+		  }
+		 ///////
+		 if(c==4 && piscar==0){
+					seq4();
+					piscar=1;
+				  }
+		 if(c==4 && piscar==1){
+			tps();
+			ps4();
+		  }
+		 /////
+		 if(c==5 && piscar==0){
+				seq5();
+				piscar=1;
+			  }
+		 if(c==5 && piscar==1){
+			tps();
+			ps5();
+		 }
+		 //////
+		 if(c==6 && piscar==0){
+			seq6();
+			piscar=1;
+		 }
+		 if(c==6 && piscar==1){
+			tps();
+			ps6();
+		 }
+		 /////
+		 if(c==7 && piscar==0){
+			seq7();
+			piscar=1;
+			}
+	     if(c==7 && piscar==1){
+			tps();
+			ps7();
+			}
+
+  }
+}
+/////////////NICOLAS WARNAVA DA SILVA
+///////////15/06/2022

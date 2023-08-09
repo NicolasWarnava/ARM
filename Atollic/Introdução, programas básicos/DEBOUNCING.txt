@@ -1,0 +1,53 @@
+Código debounce
+#include "main.h"
+
+void tempo(void){
+    int x;
+    for(x=0; x<5000; x++);
+}
+
+int main(void)
+{
+    int conta=0;
+    int press=0, press2=0;
+    int conta1=0, conta2=0;
+    RCC->AHB1ENR=0x87;
+    GPIOB->MODER|=0x00000000;
+    GPIOA->MODER|=0x28000400;    //pa5 como saída
+    GPIOC->MODER|=0x00005555;
+    while (1) {
+
+        if(((GPIOB->IDR&0x0001)==0x0001) && press==0){
+            conta++;
+            if(conta>8)conta=0;
+            press=1;    //indica que pressionou o botão
+            conta1=0;
+        }
+        if(((GPIOB->IDR&0x0001)==0x0000) && press==1){
+            if(conta1++>1000) press=0;    //indica que o botão foi liberado
+        }
+
+        if(((GPIOB->IDR&0x0002)==0x0002) && press2==0){
+            conta--;
+            if(conta<0)conta=8;
+            press2=1;    //indica que pressionou o botão
+            conta2=0;
+        }
+        if(((GPIOB->IDR&0x0002)==0x0000) && press2==1){
+            if(conta2++>1000) press2=0;    //indica que o botão foi liberado
+        }
+
+        if(conta==1) GPIOC->ODR=0x01;
+        if(conta==2) GPIOC->ODR=0x03;
+        if(conta==3) GPIOC->ODR=0x07;
+        if(conta==4) GPIOC->ODR=0x0F;
+        if(conta==5) GPIOC->ODR=0x01F;
+        if(conta==6) GPIOC->ODR=0x03F;
+        if(conta==7) GPIOC->ODR=0x07F;
+        if(conta==8) GPIOC->ODR=0x0FF;
+        if(conta==0) GPIOC->ODR=0x00;
+
+
+
+    }
+}

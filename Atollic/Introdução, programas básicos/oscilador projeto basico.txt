@@ -1,0 +1,65 @@
+#include "main.h"
+//função de tempo
+void tempo(void){
+	 while((TIM10-SR & 0X01)==0X00){};	
+	 TIM10->SR&=~(0X01);
+}
+
+int main(void)
+{
+	int aux;
+	
+		RCC->AHB1ENR=0X00000087;  //liga o clock
+		GPIOA->MODER|0X28000400; //PA 5 COMO SAIDA
+		GPIOC->MODER|=0X00005555; // ativando pinos de 0 a 7 para saida
+		  //CONFIGURANDO O TIMER 10 PARA GERAR 5 SEGUNDOS
+		RCC->APB2ENR|=0X20000; //HABILITA O CLOCK DO TIMER 10
+			TIM10->CR1|0X05;
+			TIM10->PSC=9999;
+			TIM10->ARR=799;
+		  
+ 
+  while (1)
+  {
+
+	 
+	  //liga
+	GPIOC->ODR|=0X0001; //p0
+		tempo();
+	GPIOC->ODR|=0X0002; //p1
+		tempo();
+	GPIOC->ODR|=0X0004; //p2
+		tempo();
+	GPIOC->ODR|=0X0008; //p3
+		tempo();
+	GPIOC->ODR|=0X0010; //p4
+		tempo();
+	GPIOC->ODR|=0X0020; //p5
+		tempo();
+	GPIOC->ODR|=0X0040; //p6
+		tempo();
+	GPIOC->ODR|=0X0080; //p7
+		tempo();
+	
+	//desliga 
+	GPIOC->ODR&=~0X0080;
+		tempo();
+	GPIOC->ODR&=~0X0040;
+		tempo();
+	GPIOC->ODR&=~0X0020;
+		tempo();
+	GPIOC->ODR&=~0X0010;
+		tempo();
+	GPIOC->ODR&=~0X0008;
+		tempo();
+	GPIOC->ODR&=~0X0004;
+		tempo();
+	GPIOC->ODR&=~0X0002;
+		tempo();
+	GPIOC->ODR&=~0X0001;
+		tempo();
+
+						
+	 
+  } 
+}

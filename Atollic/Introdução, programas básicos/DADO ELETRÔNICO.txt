@@ -1,0 +1,97 @@
+#include "main.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+////////////////////////****************DADO ELETRÔNICO*********************//////////////////
+//variaveis globais
+int trava=0;
+int c;
+//função de tempo
+void tps(){
+	for(int i=0;i<10000;i++);
+}
+void delay(void){
+    int x;
+    for(x=0; x<5000; x++);
+}
+
+void offset(){
+GPIOC->ODR=0x0;  //desliga
+	tps();  // espera 1 segundo;
+}
+
+//funções de PREDEFINIÇÕES.
+void it1(){
+	GPIOC->ODR=0X8; // 0001000
+	tps();
+}
+void it2(){
+	GPIOC->ODR=0X41; // 1000001
+	tps();
+}
+void it3(){
+	GPIOC->ODR=0X49; // 1001001
+	tps();
+}
+void it4(){
+	GPIOC->ODR=0X55; // 1010101
+	tps();
+}
+void it5(){
+	GPIOC->ODR=0X5D; // 1011101
+	tps();
+}
+void it6(){
+	GPIOC->ODR=0X77; // 1110111
+	tps();
+}
+//////////
+
+int main()
+{
+   RCC->AHB1ENR=0X87;
+   GPIOC->MODER|=0X5555;
+   GPIOB->MODER|=0X0;
+   GPIOA->MODER|=0X28000400;
+   int c;
+
+   srand(time(NULL));
+  while(1){
+	  if(((GPIOB->IDR&0X100)==0X100)&& trava==0){
+		  c=rand()%7;
+			  trava=1;
+			  }
+
+  	  if(((GPIOB->IDR&=0x100) == 0x0) && trava == 1){
+  		  	  trava=0;
+  			if(c==0)
+  			c=c+1;
+  	  }
+
+	  if(c==1){ //=1
+		  it1();
+		  tps();
+	  }
+	  if(c==2){ //=2
+		  it2();
+		  tps();
+	  }
+	  if(c==3){ //=3
+		  it3();
+		  tps();
+	  }
+	  if(c==4){ //=4
+		  it4();
+		  tps();
+	  }
+	  if(c==5){ //=5
+		  it5();
+		  tps();
+	  }
+	  if(c==6){ //=6
+		  it6();
+		  tps();
+	  }
+  }
+}
