@@ -1,0 +1,1 @@
+Este é o código de um mixer de dois sinais, utilizando os periféricos ADC com DMA, os dois sinais são somados e o resultado é transmitido por DAC.[esquemático-1.pdf](https://github.com/NicolasWarnava/ARM/files/12408681/esquematico-1.pdf)
